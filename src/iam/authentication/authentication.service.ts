@@ -1,9 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -12,7 +17,7 @@ export class AuthenticationService {
     private readonly hashingService: HashingService,
   ) {}
 
-  async signup(data: SignUpDto) {
+  async signUp(data: SignUpDto) {
     try {
       const user = new User();
       user.email = data.email;
@@ -26,5 +31,26 @@ export class AuthenticationService {
       }
       throw error;
     }
+  }
+
+  async signIn(data: SignInDto) {
+    const user = await this.userRepo.findOneBy({
+      email: data.email,
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('This user not exists!');
+    }
+
+    const isEqual = await this.hashingService.compare(
+      data.password,
+      user.password,
+    );
+
+    if (!isEqual) {
+      throw new UnauthorizedException('Email or password is not match!');
+    }
+
+    return true;
   }
 }
