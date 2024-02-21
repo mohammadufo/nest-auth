@@ -27,10 +27,12 @@ export class AuthenticationController {
     @Body() body: SignInDto,
   ) {
     const accessToke = await this.authenticationService.signIn(body);
-    response.cookie('accessToken', accessToke, {
-      secure: true,
-      httpOnly: true,
-      sameSite: true,
-    });
+    // response.cookie('accessToken', accessToke, {
+    //   secure: true,
+    //   httpOnly: true,
+    //   sameSite: true,
+    // });
+
+    return accessToke;
   }
 }
