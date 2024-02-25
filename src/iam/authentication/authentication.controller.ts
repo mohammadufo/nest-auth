@@ -12,15 +12,16 @@ import { SignInDto } from './dto/sign-in.dto';
 import { Response } from 'express';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from '../enums/auth-type.enum';
+import { refreshTokenDto } from './dto/refresh-token.dto';
 
 @Auth(AuthType.None)
 @Controller('authentication')
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(private readonly authService: AuthenticationService) {}
 
   @Post('sign-up')
   signUp(@Body() body: SignUpDto) {
-    return this.authenticationService.signUp(body);
+    return this.authService.signUp(body);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -29,13 +30,13 @@ export class AuthenticationController {
     @Res({ passthrough: true }) response: Response,
     @Body() body: SignInDto,
   ) {
-    const accessToke = await this.authenticationService.signIn(body);
-    // response.cookie('accessToken', accessToke, {
-    //   secure: true,
-    //   httpOnly: true,
-    //   sameSite: true,
-    // });
-
+    const accessToke = await this.authService.signIn(body);
     return accessToke;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh-tokens')
+  refreshTokens(@Body() refreshTokenDto: refreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto);
   }
 }
