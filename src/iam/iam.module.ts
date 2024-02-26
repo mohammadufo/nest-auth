@@ -28,18 +28,18 @@ import { PermissionsGuard } from './authorization/guards/permission/permissions.
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
     },
-    {
-      provide: APP_GUARD,
-      useClass: PermissionsGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: PermissionsGuard,
+    // },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    // {
-    //   provide: HashingService,
-    //   useClass: BcryptService,
-    // },
+    {
+      provide: HashingService,
+      useClass: BcryptService,
+    },
     AccessTokenGuard,
     AuthenticationService,
     RefreshTokenIdsStorage,
