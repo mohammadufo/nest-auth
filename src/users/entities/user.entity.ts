@@ -23,6 +23,12 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ default: false })
+  isTfaEnabled: boolean;
+
+  @Column({ nullable: true })
+  tfaSecret: string;
+
   @JoinTable()
   @OneToMany((type) => ApiKey, (apiKey) => apiKey.user)
   apiKey: ApiKey[];
